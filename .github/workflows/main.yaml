@@ -1,9 +1,50 @@
-name: Build
-on: [push, pull_request]
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
 jobs:
-  build:
-    runs-on: ubuntu-20.04
+  markdown:
+    name: Markdown
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@master
-      - name: Build
-        run: make
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Lint Markdown
+        run: npx --yes markdownlint-cli2@0.18.1
+
+  python:
+    name: Python
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tools
+        run: pip install ruff==0.14.2 httpx
+      - name: Check syntax
+        run: python -m compileall -q skills
+      - name: Lint
+        run: ruff check skills
+      - name: Smoke-test analysis script
+        run: python skills/cve-prior-exposure-skill/scripts/cve_prior_exposure_analysis.py --help
+
+  spelling:
+    name: Spelling
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check spelling
+        run: |
+          pip install codespell==2.4.1
+          codespell

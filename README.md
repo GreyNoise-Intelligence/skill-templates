@@ -1,45 +1,99 @@
-[![main](https://github.com/GreyNoise-Intelligence/os-template/workflows/Build/badge.svg)](https://github.com/GreyNoise-Intelligence/os-template/actions?query=workflow%3ABuild)
+# GreyNoise Skill Templates
+
+[![Validate](https://github.com/GreyNoise-Intelligence/skill-templates/actions/workflows/main.yaml/badge.svg)](https://github.com/GreyNoise-Intelligence/skill-templates/actions/workflows/main.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# GreyNoise Open-Source Template
+A collection of `SKILL.md` files for AI agents and LLM tools (Cursor, Claude, and other agent runtimes that support skills) built around [GreyNoise](https://greynoise.io) data and threat-intelligence workflows.
 
-The GreyNoise OS template is used to create new open source repos. It contains standards we've set as a team at GreyNoise.
-Please feel free to add/modify as needed for specific languages/tools.
+Each skill describes a repeatable, deterministic analysis an agent can carry out against the GreyNoise API: when to use it, the steps to follow, the output template to produce, and the common pitfalls to avoid. Some skills also ship reference scripts the agent (or a human) can run directly.
 
-## Usage 
+## Available Skills
 
-Insert details about usage of your tool, example are very helpful. 
+| Skill | Description |
+| --- | --- |
+| [cve-prior-exposure-skill](skills/cve-prior-exposure-skill/SKILL.md) | Given a CVE ID, determines how many of the IPs exploiting or scanning for that CVE were already classified as malicious, suspicious, benign, or unknown *before* the CVE was disclosed, versus how much of the attacking infrastructure is new. |
 
- ## Contributing
+## Repository Layout
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+```text
+skills/
+  <skill-name>/
+    SKILL.md        # Skill definition: frontmatter (name, description) + instructions
+    scripts/        # Optional reference implementations used by the skill
+```
+
+## Usage
+
+### Installing a skill in your AI tool
+
+Copy (or symlink) a skill folder into the skills directory your tool reads from. For example:
+
+- **Cursor:** `~/.cursor/skills/` (user-level) or `.cursor/skills/` (project-level)
+- **Claude Code:** `~/.claude/skills/` (user-level) or `.claude/skills/` (project-level)
+
+```bash
+git clone https://github.com/GreyNoise-Intelligence/skill-templates.git
+cp -r skill-templates/skills/cve-prior-exposure-skill ~/.cursor/skills/
+```
+
+Once installed, the agent picks up the skill from its `description` and triggers it on matching requests, e.g.:
+
+> "Run a prior exposure analysis for CVE-2024-3400"
+
+The agent needs outbound HTTPS access and a GreyNoise API key. You can get one from the [GreyNoise Visualizer](https://viz.greynoise.io).
+
+### Running the reference scripts directly
+
+The `cve-prior-exposure-skill` includes a Python reference implementation (requires Python 3 and `httpx`):
+
+```bash
+pip install httpx
+export GREYNOISE_API_KEY=<your-api-key>
+
+cd skills/cve-prior-exposure-skill/scripts
+
+# Run the analysis (writes JSON to /tmp/cve_prior_exposure_<CVE>.json)
+python cve_prior_exposure_analysis.py CVE-2024-3400 --days 90
+
+# Render the JSON as fixed-template Markdown tables
+python cve_prior_exposure_render.py /tmp/cve_prior_exposure_2024-3400.json
+```
+
+Options for `cve_prior_exposure_analysis.py`:
+
+- `--days`: lookback window to request (default `90`). The effective window depends on your GreyNoise plan; the report warns you if it gets a shorter window than you asked for.
+- `--api-key`: GreyNoise API key (defaults to `$GREYNOISE_API_KEY`).
+- `--out-prefix`: output file prefix (default `/tmp/cve_prior_exposure`).
+
+## Contributing
+
+New skills are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+When adding a skill:
+
+- Create a new folder under `skills/` containing a `SKILL.md` with `name` and `description` frontmatter.
+- Write the `description` so an agent can tell when to trigger the skill (include example trigger phrases).
+- Put any helper scripts in a `scripts/` subfolder and reference them from `SKILL.md`.
+- Add the skill to the **Available Skills** table above.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/GreyNoise-Intelligence/os-template/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/GreyNoise-Intelligence/skill-templates/tags).
 
 ## Authors
 
-* **Your Name** - *Initial work* - [Your Github Handle](https://github.com/github-handle)
-
-See also the list of [contributors](https://github.com/GreyNoise-Intelligence/os-template/contributors) who participated in this project.
-
-## Acknowledgments
-
-* Person (https://github.com/github-handle) - reason
-
+See the list of [contributors](https://github.com/GreyNoise-Intelligence/skill-templates/contributors) who participated in this project.
 
 ## Links
 
-* [GreyNoise.io](https://greynoise.io)
-* [GreyNoise Terms](https://greynoise.io/terms)
-* [GreyNoise Developer Portal](https://developer.greynoise.io)
+- [GreyNoise.io](https://greynoise.io)
+- [GreyNoise Terms](https://greynoise.io/terms)
+- [GreyNoise Docs Portal](https://docs.greynoise.io)
 
 ## Contact Us
 
-Have any questions or comments about GreyNoise?  Contact us at [hello@greynoise.io](mailto:hello@greynoise.io)
+Have any questions or comments about GreyNoise?  Contact us at [support@greynoise.io](mailto:support@greynoise.io)
 
 ## Copyright and License
 
 Code released under [MIT License](LICENSE).
-

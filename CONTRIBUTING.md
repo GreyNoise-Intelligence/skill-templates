@@ -10,12 +10,12 @@ We are happy to receive feature request or bug reports on the GitHub [issue trac
 
 A bug report is most useful if it gives detailed, *reproducible* instructions. Additionally, it should include:
 
-  * the version.
-  * the exact arguments used.
-  * the exact config used.
-  * the output received.
-  * the output you expected instead.
-  * screenshots if available.
+* the version.
+* the exact arguments used.
+* the exact config used.
+* the output received.
+* the output you expected instead.
+* screenshots if available.
 
 This will allow us to help you more quickly. A template is included via `.github/ISSUE_TEMPLATE/bug.md` as well.
 
@@ -24,11 +24,11 @@ Pull Requests
 
 We appreciate PRs but encourage you to follow these guidelines for the reviewer:
 
-* Provide context to the reviewer in the "Description" of the PR. 
-* Add/update tests for the code modified. 
+* Provide context to the reviewer in the "Description" of the PR.
+* Add/update tests for the code modified.
 * PRs should be kept small and cohesive. If you're making bigger change, consider chunking up the PR into small pieces.
 
-Github actions are use to run tests on the latest ubuntu:20.04 image.
+GitHub Actions run Markdown lint, Python syntax and lint checks, and a spelling check on ubuntu-24.04.
 
 Commits
 -------

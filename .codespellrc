@@ -1,0 +1,5 @@
+[codespell]
+skip = .git,package-lock.json
+check-filenames =
+check-hidden =
+ignore-words = .codespell-ignore

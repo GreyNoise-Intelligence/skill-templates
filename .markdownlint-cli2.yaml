@@ -1,0 +1,10 @@
+# Shared Markdown rules for skill docs, the README, and GitHub templates.
+globs:
+  - "**/*.md"
+
+config:
+  default: true
+  # Skill docs are prose with long explanatory lines.
+  MD013: false
+  # GitHub issue templates use HTML comments.
+  MD033: false
