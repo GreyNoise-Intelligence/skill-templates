@@ -17,12 +17,17 @@ Each skill describes a repeatable, deterministic analysis an agent can carry out
 
 ```text
 skills/
+  AGENTS.md         # Catalog: which skill to use, and when
   <skill-name>/
     SKILL.md        # Skill definition: frontmatter (name, description) + instructions
     scripts/        # Optional reference implementations used by the skill
 ```
 
 ## Usage
+
+### Point an agent at this directory
+
+Clone the repo and point your agent at `skills/`. [skills/AGENTS.md](skills/AGENTS.md) is the index: it says which skill matches a task and why. The agent should read that catalog, then read the matching `SKILL.md` before running the analysis.
 
 ### Installing a skill in your AI tool
 
@@ -74,7 +79,7 @@ When adding a skill:
 - Create a new folder under `skills/` containing a `SKILL.md` with `name` and `description` frontmatter.
 - Write the `description` so an agent can tell when to trigger the skill (include example trigger phrases).
 - Put any helper scripts in a `scripts/` subfolder and reference them from `SKILL.md`.
-- Add the skill to the **Available Skills** table above.
+- Add the skill to the **Available Skills** table above and to [skills/AGENTS.md](skills/AGENTS.md).
 
 ## Versioning
 
